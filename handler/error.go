@@ -29,6 +29,9 @@ func ErrorHandler(err error, c echo.Context) {
 			case "lte":
 				report.Message = fmt.Sprintf("%s value must be lower than %s",
 					err.Field(), err.Param())
+			case "number":
+				report.Message = fmt.Sprintf("%s value must be a number",
+					err.Field())
 			}
 
 			break

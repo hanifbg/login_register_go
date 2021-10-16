@@ -3,7 +3,6 @@ module github.com/hanifbg/login_register
 go 1.17
 
 require (
-	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.6.1
 	github.com/spf13/viper v1.9.0
 	gorm.io/driver/mysql v1.1.2
