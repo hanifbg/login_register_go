@@ -15,5 +15,6 @@ func RegisterHandler(c echo.Context) (err error) {
 	if err = c.Validate(u); err != nil {
 		return
 	}
+
 	return c.JSON(http.StatusOK, u)
 }
