@@ -64,10 +64,17 @@ func main() {
 	db.AutoMigrate(&user.User{})
 
 	//routes
-	e.POST("/login", handler.LoginHandler)
-	e.POST("/register", handler.RegisterHandler)
+	v1 := e.Group("/v1")
+	groupV1Routes(v1)
+	// e.POST("/login", handler.LoginHandler)
+	// e.POST("/register", handler.RegisterHandler)
 
 	e.Logger.Fatal(e.Start(":" + port))
+}
+
+func groupV1Routes(e *echo.Group) {
+	e.POST("/login", handler.LoginHandler)
+	e.POST("/register", handler.RegisterHandler)
 }
 
 type CustomValidator struct {
