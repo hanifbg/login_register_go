@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
+
+	"github.com/go-playground/validator/v10"
+	user "github.com/hanifbg/login_register/entity/user"
 
 	"github.com/hanifbg/login_register/handler"
 	"github.com/labstack/echo/v4"
@@ -57,10 +59,19 @@ func main() {
 		log.Fatal("Db connection error")
 	}
 
-	fmt.Println(db)
+	db.AutoMigrate(&user.User{})
 
 	//routes
-	e.GET("/", handler.LoginHandler)
+	e.POST("/login", handler.LoginHandler)
+	e.POST("/register", handler.RegisterHandler)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":" + port))
+}
+
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
 }
