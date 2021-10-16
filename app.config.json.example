@@ -1,0 +1,15 @@
+{
+    "appName": "Your App Name",
+
+    "server": {
+        "port": 8080
+    },
+
+    "database": {
+        "port": "3306",
+        "host": "127.0.0.1",
+        "username": "root",
+        "password": "password",
+        "dbname": "dbname"
+    }
+}
