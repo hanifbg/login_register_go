@@ -7,12 +7,12 @@ import (
 	"github.com/hanifbg/login_register/utils"
 )
 
-func BindUser(u user.User) {
+func BindUser(u user.User) (user user.User) {
 	hashedPassword, err := utils.EncryptPassword(u.Password)
 	if err != nil {
 		return
 	}
-	user := user.User{}
+
 	user.Name = u.Name
 	user.Email = u.Email
 	user.Phone_number = u.Phone_number
@@ -20,4 +20,6 @@ func BindUser(u user.User) {
 	user.Password = string(hashedPassword)
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
+
+	return
 }

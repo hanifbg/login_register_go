@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	user "github.com/hanifbg/login_register/entity/user"
+	"github.com/hanifbg/login_register/service"
 	echo "github.com/labstack/echo/v4"
 )
 
@@ -16,5 +17,7 @@ func RegisterHandler(c echo.Context) (err error) {
 		return
 	}
 
-	return c.JSON(http.StatusOK, nil)
+	user := service.BindUser(*u)
+
+	return c.JSON(http.StatusOK, user)
 }
