@@ -14,9 +14,7 @@ func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}
 	e.HTTPErrorHandler = handler.ErrorHandler
-
 	//env setting
-
 	cfg := config.ProviderConfig()
 	port := cfg.GetString("server.port")
 	db := repository.Connection(cfg)
