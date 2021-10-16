@@ -16,6 +16,8 @@ import (
 
 func main() {
 	e := echo.New()
+	e.Validator = &CustomValidator{validator: validator.New()}
+	e.HTTPErrorHandler = handler.ErrorHandler
 	var dbUser, dbPass, dbHost, dbPort, dbName, port string
 
 	//env setting
