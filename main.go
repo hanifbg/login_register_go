@@ -8,6 +8,7 @@ import (
 	user "github.com/hanifbg/login_register/entity/user"
 	"github.com/hanifbg/login_register/repository"
 	service "github.com/hanifbg/login_register/service"
+	"gorm.io/gorm"
 
 	"github.com/hanifbg/login_register/handler"
 	"github.com/labstack/echo/v4"
@@ -45,7 +46,10 @@ func main() {
 	db.AutoMigrate(&user.User{})
 
 	//routes
-	srv := initService()
+	repo := initRepository(db)
+	srv := initService(service.Option{
+		Repository: repo,
+	})
 	v1 := e.Group("/v1", func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := handler.HandlerContext{c, srv}
@@ -58,8 +62,18 @@ func main() {
 	e.Logger.Fatal(e.Start(":" + port))
 }
 
-func initService() *service.Services {
-	us := service.NewUserService()
+func initRepository(db *gorm.DB) *repository.Repository {
+	userRepo := repository.NewUserRepository(db)
+
+	repo := repository.Repository{
+		User: userRepo,
+	}
+
+	return &repo
+}
+
+func initService(servOption service.Option) *service.Services {
+	us := service.NewUserService(servOption)
 
 	srv := service.Services{
 		UserService: us,

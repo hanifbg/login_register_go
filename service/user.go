@@ -12,10 +12,13 @@ type UserServiceInterface interface {
 }
 
 type userService struct {
+	opt Option
 }
 
-func NewUserService() UserServiceInterface {
-	return &userService{}
+func NewUserService(opt Option) UserServiceInterface {
+	return &userService{
+		opt: opt,
+	}
 }
 
 func (us *userService) BindUser(u user.User) (user user.User) {
@@ -31,6 +34,7 @@ func (us *userService) BindUser(u user.User) (user user.User) {
 	user.Password = string(hashedPassword)
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
+	us.opt.Repository.User.Create(user)
 
 	return
 }
