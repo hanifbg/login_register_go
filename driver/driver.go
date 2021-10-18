@@ -1,4 +1,4 @@
-package repository
+package driver
 
 import (
 	"log"
@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Connection(cfg *viper.Viper) (db *gorm.DB) {
+func DBConnection(cfg *viper.Viper) (db *gorm.DB) {
 	var dbUser, dbPass, dbHost, dbPort, dbName string
 	dbUser = cfg.GetString("database.username")
 	dbPass = cfg.GetString("database.password")

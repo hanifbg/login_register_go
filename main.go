@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/hanifbg/login_register/config"
+	driver "github.com/hanifbg/login_register/driver"
 	user "github.com/hanifbg/login_register/entity/user"
 	"github.com/hanifbg/login_register/repository"
 	service "github.com/hanifbg/login_register/service"
@@ -38,18 +39,21 @@ func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}
 	e.HTTPErrorHandler = handler.ErrorHandler
+
 	//env setting
 	cfg := config.ProviderConfig()
 	port := cfg.GetString("server.port")
-	db := repository.Connection(cfg)
 
+	//DB
+	db := driver.DBConnection(cfg)
 	db.AutoMigrate(&user.User{})
 
-	//routes
 	repo := initRepository(db)
 	srv := initService(service.Option{
 		Repository: repo,
 	})
+
+	//routes
 	v1 := e.Group("/v1", func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := handler.HandlerContext{c, srv}
