@@ -39,6 +39,7 @@ func main() {
 	e := echo.New()
 	e.Validator = &CustomValidator{validator: validator.New()}
 	e.HTTPErrorHandler = handler.ErrorHandler
+	e.Debug = true
 
 	//env setting
 	cfg := config.ProviderConfig()

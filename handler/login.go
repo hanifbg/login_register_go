@@ -8,9 +8,13 @@ import (
 )
 
 func LoginHandler(c echo.Context) (err error) {
+	cc := c.(HandlerContext)
 	u := new(user.User)
-	if err = c.Bind(u); err != nil {
+	l := new(user.LoginUser)
+	if err = c.Bind(l); err != nil {
 		return
 	}
-	return c.JSON(http.StatusOK, u)
+
+	result := cc.Srv.UserService.LoginUser(*u, *l)
+	return c.JSON(http.StatusOK, result)
 }

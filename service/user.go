@@ -1,14 +1,13 @@
 package service
 
 import (
-	"time"
-
 	user "github.com/hanifbg/login_register/entity/user"
 	"github.com/hanifbg/login_register/utils"
 )
 
 type UserServiceInterface interface {
 	BindUser(user.User) user.User
+	LoginUser(user.User, user.LoginUser) user.User
 }
 
 type userService struct {
@@ -27,14 +26,14 @@ func (us *userService) BindUser(u user.User) (user user.User) {
 		return
 	}
 
-	user.Name = u.Name
-	user.Email = u.Email
-	user.Phone_number = u.Phone_number
-	user.Address = u.Address
+	user = u
 	user.Password = string(hashedPassword)
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
 	us.opt.Repository.User.Create(user)
 
 	return
+}
+
+func (us *userService) LoginUser(u user.User, l user.LoginUser) (user user.User) {
+
+	return us.opt.Repository.User.FindByEmail(l)
 }
