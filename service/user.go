@@ -7,7 +7,7 @@ import (
 
 type UserServiceInterface interface {
 	BindUser(user.User) user.User
-	LoginUser(user.User, user.LoginUser) user.User
+	LoginUser(user.LoginUser) user.User
 }
 
 type userService struct {
@@ -33,7 +33,7 @@ func (us *userService) BindUser(u user.User) (user user.User) {
 	return
 }
 
-func (us *userService) LoginUser(u user.User, l user.LoginUser) (user user.User) {
+func (us *userService) LoginUser(l user.LoginUser) (user user.User) {
 
 	return us.opt.Repository.User.FindByEmail(l)
 }
