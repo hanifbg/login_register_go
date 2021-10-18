@@ -7,7 +7,18 @@ import (
 	"github.com/hanifbg/login_register/utils"
 )
 
-func BindUser(u user.User) (user user.User) {
+type UserServiceInterface interface {
+	BindUser(user.User) user.User
+}
+
+type userService struct {
+}
+
+func NewUserService() UserServiceInterface {
+	return &userService{}
+}
+
+func (us *userService) BindUser(u user.User) (user user.User) {
 	hashedPassword, err := utils.EncryptPassword(u.Password)
 	if err != nil {
 		return

@@ -1,14 +1,37 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/hanifbg/login_register/config"
 	user "github.com/hanifbg/login_register/entity/user"
 	"github.com/hanifbg/login_register/repository"
+	service "github.com/hanifbg/login_register/service"
 
 	"github.com/hanifbg/login_register/handler"
 	"github.com/labstack/echo/v4"
 )
+
+type SrvContext struct {
+	echo.Context
+	srv *service.Services
+}
+
+func RegisterHandler(c echo.Context) error {
+	cc := c.(*SrvContext)
+	u := new(user.User)
+	if err := c.Bind(u); err != nil {
+		return err
+	}
+	if err := c.Validate(u); err != nil {
+		return err
+	}
+
+	user := cc.srv.UserService.BindUser(*u)
+
+	return c.JSON(http.StatusOK, user)
+}
 
 func main() {
 	e := echo.New()
@@ -22,15 +45,27 @@ func main() {
 	db.AutoMigrate(&user.User{})
 
 	//routes
-	v1 := e.Group("/v1")
-	groupV1Routes(v1)
+	srv := initService()
+	v1 := e.Group("/v1", func(h echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := handler.HandlerContext{c, srv}
+			return h(cc)
+		}
+	})
+	v1.POST("/register", handler.RegisterHandler)
+	v1.POST("/login", handler.LoginHandler)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }
 
-func groupV1Routes(e *echo.Group) {
-	e.POST("/login", handler.LoginHandler)
-	e.POST("/register", handler.RegisterHandler)
+func initService() *service.Services {
+	us := service.NewUserService()
+
+	srv := service.Services{
+		UserService: us,
+	}
+
+	return &srv
 }
 
 type CustomValidator struct {
