@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterHandler(c echo.Context) error {
-	cc := c.(HandlerContext)
+	cc := c.(Option)
 	u := new(user.User)
 	if err := c.Bind(u); err != nil {
 		return err

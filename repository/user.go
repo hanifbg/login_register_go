@@ -2,7 +2,6 @@ package repository
 
 import (
 	user "github.com/hanifbg/login_register/entity/user"
-	"gorm.io/gorm"
 )
 
 type UserRepository interface {
@@ -11,23 +10,25 @@ type UserRepository interface {
 }
 
 type repository struct {
-	db *gorm.DB
+	opt Option
 }
 
-func NewUserRepository(db *gorm.DB) *repository {
-	return &repository{db}
+func NewUserRepository(opt Option) *repository {
+	return &repository{
+		opt: opt,
+	}
 }
 
 func (r *repository) Create(user user.User) (user.User, error) {
 
-	err := r.db.Create(&user).Error
+	err := r.opt.DB.Create(&user).Error
 
 	return user, err
 }
 
 func (r *repository) FindByEmail(login user.LoginUser) user.User {
 	var result user.User
-	r.db.Where("email = ?", login.Email).First(&result)
+	r.opt.DB.Where("email = ?", login.Email).First(&result)
 
 	return result
 }

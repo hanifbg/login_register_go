@@ -5,7 +5,7 @@ import (
 	echo "github.com/labstack/echo/v4"
 )
 
-type HandlerContext struct {
+type Option struct {
 	echo.Context
 	Srv *service.Services
 }

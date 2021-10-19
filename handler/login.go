@@ -8,7 +8,7 @@ import (
 )
 
 func LoginHandler(c echo.Context) (err error) {
-	cc := c.(HandlerContext)
+	cc := c.(Option)
 	l := new(user.LoginUser)
 	if err = c.Bind(l); err != nil {
 		return

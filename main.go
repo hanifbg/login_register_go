@@ -1,39 +1,16 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/hanifbg/login_register/config"
 	driver "github.com/hanifbg/login_register/driver"
 	user "github.com/hanifbg/login_register/entity/user"
 	"github.com/hanifbg/login_register/repository"
 	service "github.com/hanifbg/login_register/service"
-	"gorm.io/gorm"
 
 	"github.com/hanifbg/login_register/handler"
 	"github.com/labstack/echo/v4"
 )
-
-type SrvContext struct {
-	echo.Context
-	srv *service.Services
-}
-
-func RegisterHandler(c echo.Context) error {
-	cc := c.(*SrvContext)
-	u := new(user.User)
-	if err := c.Bind(u); err != nil {
-		return err
-	}
-	if err := c.Validate(u); err != nil {
-		return err
-	}
-
-	user := cc.srv.UserService.BindUser(*u)
-
-	return c.JSON(http.StatusOK, user)
-}
 
 func main() {
 	e := echo.New()
@@ -49,7 +26,9 @@ func main() {
 	db := driver.DBConnection(cfg)
 	db.AutoMigrate(&user.User{})
 
-	repo := initRepository(db)
+	repo := initRepository(repository.Option{
+		DB: db,
+	})
 	srv := initService(service.Option{
 		Repository: repo,
 	})
@@ -57,7 +36,7 @@ func main() {
 	//routes
 	v1 := e.Group("/v1", func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := handler.HandlerContext{c, srv}
+			cc := handler.Option{c, srv}
 			return h(cc)
 		}
 	})
@@ -67,8 +46,8 @@ func main() {
 	e.Logger.Fatal(e.Start(":" + port))
 }
 
-func initRepository(db *gorm.DB) *repository.Repository {
-	userRepo := repository.NewUserRepository(db)
+func initRepository(repoOption repository.Option) *repository.Repository {
+	userRepo := repository.NewUserRepository(repoOption)
 
 	repo := repository.Repository{
 		User: userRepo,
