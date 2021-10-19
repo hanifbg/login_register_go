@@ -14,3 +14,12 @@ func EncryptPassword(pass string) (hashedPassword []byte, err error) {
 
 	return
 }
+
+func ComparePassword(hash string, pass string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(pass))
+	if err == nil {
+		return true
+	}
+
+	return false
+}

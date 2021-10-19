@@ -14,6 +14,10 @@ func LoginHandler(c echo.Context) (err error) {
 		return
 	}
 
-	result := cc.Srv.UserService.LoginUser(*l)
+	result, err := cc.Srv.UserService.LoginUser(*l)
+
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, err.Error())
+	}
 	return c.JSON(http.StatusOK, result)
 }
